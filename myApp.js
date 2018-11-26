@@ -16,11 +16,11 @@ var helmet = require('helmet');
 // [Helmet](https://github.com/helmetjs/helmet) helps you secure your
 // Express apps by setting various HTTP headers.
 // Install the package, then require it.
-app.use(helmet.hidePoweredBy());
+
 
 
 /** 2) Hide potentially dangerous information - `helmet.hidePoweredBy()` */
-
+app.use(helmet.hidePoweredBy());
 // Hackers can exploit known vulnerabilities in Express/Node
 // if they see that your site is powered by Express. `X-Powered-By: Express`
 // is sent in every request coming from Express by default.
@@ -30,7 +30,7 @@ app.use(helmet.hidePoweredBy());
 // people off. e.g. `helmet.hidePoweredBy({ setTo: 'PHP 4.2.0' })`
 
 // Use `helmet.hidePoweredBy()``
-app.use(helmet.frameguard({action: 'deny'}) )
+app.use(helmet.hidePoweredBy());
 
 
 /** 3) Mitigate the risk of clickjacking - `helmet.frameguard()` */
@@ -45,7 +45,7 @@ app.use(helmet.frameguard({action: 'deny'}) )
 
 // We don't need our app to be framed, so you should use `helmet.frameguard()`
 // passing to it the configuration object `{action: 'deny'}`
-
+app.use(helmet.frameguard({action: 'deny'}) )
  
 
 /** 4) Mitigate the risk of XSS - `helmet.xssFilter()` */
@@ -117,6 +117,7 @@ app.use(helmet.hsts({maxAge: ninetyDaysInMilliseconds, force: true}))
 // policy we will intercept and restore the header, after inspecting it for testing.
 
 var ninetyDaysInMilliseconds = 90*24*60*60*1000;
+app.use(helmet.hsts({maxAge: ninetyDaysInMilliseconds, force: true}))
 
 
 //**Note**:
