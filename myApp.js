@@ -5,18 +5,18 @@
 
 var express = require('express'); // Do Not Edit
 var app = express();              // Do Not Edit
-
+var BCrypt=require('bcrypt');
 // ----
 
 /** - Challenges - *
 ********************/ 
 
 /** 1) Install and require `helmet` */
-
+var helmet = require('helmet');
 // [Helmet](https://github.com/helmetjs/helmet) helps you secure your
 // Express apps by setting various HTTP headers.
 // Install the package, then require it.
-
+app.use(helmet.hidePoweredBy());
 
 
 /** 2) Hide potentially dangerous information - `helmet.hidePoweredBy()` */
@@ -30,7 +30,7 @@ var app = express();              // Do Not Edit
 // people off. e.g. `helmet.hidePoweredBy({ setTo: 'PHP 4.2.0' })`
 
 // Use `helmet.hidePoweredBy()``
-
+app.use(helmet.frameguard({action: 'deny'}) )
 
 
 /** 3) Mitigate the risk of clickjacking - `helmet.frameguard()` */
@@ -49,7 +49,7 @@ var app = express();              // Do Not Edit
  
 
 /** 4) Mitigate the risk of XSS - `helmet.xssFilter()` */
-
+app.use(helmet.xssFilter())
 // Cross-site scripting (XSS) is a very frequent type of attack where malicious
 // script are injected into vulnerable pages, on the purpous of stealing sensitive
 // data like session cookies, or passwords. The basic rule to lower the risk
@@ -69,7 +69,7 @@ var app = express();              // Do Not Edit
 
 // Use `helmet.xssFilter()`
 
-
+app.use(helmet.noSniff())
 
 /** 5) Avoid inferring the response MIME type - `helmet.noSniff()` */
 
@@ -82,7 +82,7 @@ var app = express();              // Do Not Edit
 
 // Use `helmet.noSniff()`
 
-
+app.use(helmet.ieNoOpen())
 
 /** 6) Prevent IE from opening *untrusted* HTML - `helmet.ieNoOpen()` */
 
@@ -94,6 +94,9 @@ var app = express();              // Do Not Edit
 // to prevent IE users from executing downloads in the *trusted* site's context.
 
 // Use `helmet.ieNoOpen()`
+var ninetyDaysInMilliseconds = 90*24*60*60*1000;
+
+app.use(helmet.hsts({maxAge: ninetyDaysInMilliseconds, force: true}))
 
 
 
@@ -132,7 +135,7 @@ var ninetyDaysInMilliseconds = 90*24*60*60*1000;
 // DNS prefetching, at the cost of a performance penalty.
 
 // Use `helmet.dnsPrefetchControl()`
-
+app.use(helmet.dnsPrefetchControl())
 
 
 /** 9) Disable Client-Side Caching - `helmet.noCache()` */
@@ -144,7 +147,7 @@ var ninetyDaysInMilliseconds = 90*24*60*60*1000;
 // use this option only when there is a real need.
 
 // Use helmet.noCache()
-
+app.use(helmet.noCache())
 
 
 /** 10) Content Security Policy - `helmet.contentSecurityPolicy()` */
@@ -175,7 +178,15 @@ var ninetyDaysInMilliseconds = 90*24*60*60*1000;
 // in the `"'self'"` keyword, the single quotes are part of the keyword itself, 
 // so it needs to be enclosed in **double quotes** to be working.
 
+var csp = require('helmet-csp')
 
+app.use(csp({
+  // Specify directives as normal.
+  directives: {
+   defaultSrc: ["'self'"],
+   scriptSrc: ["'self'", 'trusted-cdn.com']
+  }
+}))
 
 /** TIP: */ 
 
