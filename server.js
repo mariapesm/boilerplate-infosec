@@ -6,7 +6,7 @@
 var express = require('express');
 var app = express();
 var helmet = require('helmet');
-var path = require('path');
+var bcrypt = require('bcrypt');
 
 app.use(function(req, res, next) {
   res.set({
